@@ -8,66 +8,46 @@ using System.Threading.Tasks;
 namespace Animator_vs_Animation {
     class Character {
         public Joint body;
+#if false
         public Character() {
             body = new Joint();
-            body.AddChild(new Joint("Stomach",new Vector3(0, 0, 0)));
-            Joint UpperArmL = new Joint("Upper Arm.L", new Vector3(20, -80, 0));
-            Joint LowerArmL = new Joint("Upper Arm.L", new Vector3(30, 0, 0));
-            UpperArmL.AddChild(LowerArmL);
-            Joint UpperArmR = new Joint("Upper Arm.R", new Vector3(-20, -80, 0));
-            Joint LowerArmR = new Joint("Upper Arm.R", new Vector3(-20, -80, 0));
-            UpperArmR.AddChild(LowerArmR);
-            body.AddChild(UpperArmL);
-            body.AddChild(UpperArmR);
-            body.AddChild(new Joint("Upper Leg.L", new Vector3(20, 0, 0)));
-            body.AddChild(new Joint("Upper Leg.R", new Vector3(-20, 0, 0)));
+            Joint stomach = new Joint("Stomach", new Vector3(0, 20, 0));
+            Joint chest = new Joint("Chest", new Vector3(0, 20, 0));
+            Joint head = new Joint("Head", new Vector3(0, 20, 0));
+            chest.AddChild(head);
+            stomach.AddChild(chest);
+            body.AddChild(stomach);
+            Joint upperArmL = new Joint("Upper Arm.L", new Vector3(-20, 40, 0));
+            Joint lowerArmL = new Joint("Upper Arm.L", new Vector3(-20, -10, 0));
+            upperArmL.AddChild(lowerArmL);
+            body.AddChild(upperArmL);
+
+            Joint upperArmR = new Joint("Upper Arm.R", new Vector3(20, 40, 0));
+            Joint lowerArmR = new Joint("Upper Arm.R", new Vector3(20, -10, 0));
+            upperArmR.AddChild(lowerArmR);
+            body.AddChild(upperArmR);
+
+            Joint upperLegR = new Joint("Upper Leg.R", new Vector3(-20, -30, 0));
+            Joint lowerLegR = new Joint("Upper Leg.R", new Vector3(0, -30, 0));
+            upperLegR.AddChild(lowerLegR);
+            body.AddChild(upperLegR);
+
+            Joint upperLegL = new Joint("Upper Leg.L", new Vector3(20, -30, 0));
+            Joint lowerLegL = new Joint("Upper Leg.L", new Vector3(0, -30, 0));
+            upperLegL.AddChild(lowerLegL);
+            body.AddChild(upperLegL);
         }
-        // OUTPUT - last joint position
-        // non-modifying points???
-        /*
-        public Vector3 ForwardKinematics(float[] angles) {
-            Vector3 prevPoint = joints[0].position;
-            Quaternion rotation = Quaternion.Identity;
-            for (int i = 1; i < joints.Count; i++) {
-                rotation *= new Quaternion(joints[i - 1].axis, angles[i - 1]);
-                Vector3 nextPoint = prevPoint + Vector3.Transform(joints[i].startOffset, rotation);
-                prevPoint = nextPoint;
-            }
-            return prevPoint;
-        }
-        public float DistanceFromTarget(Vector3 target, float[] angles) {
-            Vector3 point = ForwardKinematics(angles);
-            return Vector3.Distance(point, target);
-        }
-        private const float SamplingDistance = 0.001f;
-        public float PartialGradient(Vector3 target, float[] angles, int i) {
-            // Saves the angle,
-            // it will be restored later
-            float angle = angles[i];
-            // Gradient : [F(x+SamplingDistance) - F(x)] / h
-            float f_x = DistanceFromTarget(target, angles);
-            angles[i] += SamplingDistance;
-            float f_x_plus_d = DistanceFromTarget(target, angles);
-            float gradient = (f_x_plus_d - f_x) / SamplingDistance;
-            // Restores
-            angles[i] = angle;
-            return gradient;
-        }
-        private const float LearningRate = 0.001f;
-        private const float DistanceThreshold = 0.5f;
-        //call repeatedly
-        public void InverseKinematics(Vector3 target, float[] angles) {
-            if (DistanceFromTarget(target, angles) < DistanceThreshold)
-                return;
-            for (int i = 0; i < joints.Count; i++) {
-                // Gradient descent
-                float gradient = PartialGradient(target, angles, i);
-                angles[i] -= LearningRate * gradient;
-                // Early termination
-                if (DistanceFromTarget(target, angles) < DistanceThreshold)
-                    return;
+#endif
+#if true
+        public Character() {
+            body = new Joint();
+            Joint ptr = body;
+            for(int i = 0; i < 1; i++) {
+                Joint newJoint = new Joint(new Vector3(60, 60, 0));
+                ptr.AddChild(newJoint);
+                ptr = newJoint;
             }
         }
-        */
+#endif
     }
 }

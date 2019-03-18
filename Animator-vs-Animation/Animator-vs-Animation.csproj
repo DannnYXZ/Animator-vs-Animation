@@ -57,6 +57,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Quaternion.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -68,6 +69,7 @@
     <Compile Include="Character.cs" />
     <Compile Include="Drawer.cs" />
     <Compile Include="Joint.cs" />
+    <Compile Include="Kinematics.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

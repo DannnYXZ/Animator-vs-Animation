@@ -21,9 +21,13 @@ namespace Animator_vs_Animation {
         public MainWindow() {
             InitializeComponent();
             character = new Character();
-            character.body.Translate(new Vector3(100, 100, 0));
-            drawer = new Drawer(worldCanvas);
-            drawer.DrawCharacter(character);
+            //character.body.Translate(new Vector3(300, 300, 0));
+            //drawer = new Drawer(worldCanvas);
+            //drawer.DrawCharacter(character);
+            //Vector3 point = Kinematics.ForwardKinematics(character.body, new float[] {(float)Math.PI/4,0,1});
+            Vector3 vect = new Vector3(90, 0, 0);
+            Quaternion rot = new Quaternion(new Vector3(0, 0, 1), 90);
+            vect = rot.Rotate(vect);
         }
     }
 }

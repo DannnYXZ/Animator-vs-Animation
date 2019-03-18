@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace Animator_vs_Animation {
@@ -19,7 +20,7 @@ namespace Animator_vs_Animation {
                 if (joint.showDependencies) {
                     Line line = new Line();
                     line.Stroke = System.Windows.Media.Brushes.Orange;
-                    line.StrokeThickness = 10;
+                    line.StrokeThickness = 5;
                     line.X1 = joint.position.X;
                     line.Y1 = joint.position.Y;
                     line.X2 = child.position.X;
@@ -28,6 +29,14 @@ namespace Animator_vs_Animation {
                 }
                 DrawJoints(child);
             }
+
+            Ellipse circle = new Ellipse();
+            circle.Width = 7;
+            circle.Height = 7;
+            circle.SetValue(Canvas.LeftProperty, (double)(joint.position.X - circle.Width / 2f));
+            circle.SetValue(Canvas.TopProperty, (double)(joint.position.Y - circle.Height / 2f));
+            circle.Fill = new SolidColorBrush(Color.FromArgb(255, 240, 87, 7));
+            canvas.Children.Add(circle);
         }
         public void DrawCharacter(Character character) {
             DrawJoints(character.body);
