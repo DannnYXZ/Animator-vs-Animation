@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Animator_vs_Animation {
     class Joint {
-        //Joint parent;
+        Joint parent;
         public string name;
         public Vector3 startOffset = Vector3.Zero;
         public Vector3 position = new Vector3(0, 0, 0);
@@ -28,19 +28,33 @@ namespace Animator_vs_Animation {
             this.name = name;
             this.startOffset = shift;
         }
-        private void UpdatePos(Joint parent) {
-            this.position = parent.position + this.startOffset;
+        private void UpdatePos() {
+            if (parent == null)
+                position = Vector3.Zero + startOffset;
+            else
+                this.position = parent.position + this.startOffset;
             foreach (Joint child in joints)
-                child.UpdatePos(this);
+                child.UpdatePos();
+        }
+        public void Rotate(float ang) {
+            Quaternion angRot = new Quaternion(this.axis, ang);
+            foreach (Joint child in joints) {
+                child.startOffset = angRot.Rotate(child.startOffset);
+                child.UpdatePos();
+                child.Rotate(ang);
+            }
+            this.rot = this.rot.Mul(angRot);
         }
         public void AddChild(Joint joint) {
+            joint.parent = this;
             joints.Add(joint);
-            joint.UpdatePos(this);
+            joint.UpdatePos();
         }
         public void Translate(Vector3 shift) {
-            this.position += shift;
+            this.startOffset += shift;
+            UpdatePos();
             foreach (Joint joint in joints)
-                joint.Translate(shift);
+                joint.UpdatePos();
         }
     }
 }

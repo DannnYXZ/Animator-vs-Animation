@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace Animator_vs_Animation {
     public partial class MainWindow : Window {
@@ -21,13 +23,29 @@ namespace Animator_vs_Animation {
         public MainWindow() {
             InitializeComponent();
             character = new Character();
-            //character.body.Translate(new Vector3(300, 300, 0));
-            //drawer = new Drawer(worldCanvas);
-            //drawer.DrawCharacter(character);
-            //Vector3 point = Kinematics.ForwardKinematics(character.body, new float[] {(float)Math.PI/4,0,1});
-            Vector3 vect = new Vector3(90, 0, 0);
-            Quaternion rot = new Quaternion(new Vector3(0, 0, 1), 90);
-            vect = rot.Rotate(vect);
+            character.body.Translate(new Vector3(400, 200, 0));
+            drawer = new Drawer(worldCanvas);
+            //Vector3 point = Kinematics.ForwardKinematics(character.body, new float[] { 0, 45, 0 });
+            //await Render();
+            var t = Task.Run(async () => {
+                await Render();
+            });
+        }
+        public Task Render() {
+            while (true) {
+                Dispatcher.Invoke(new Action(() => {
+                    worldCanvas.Children.Clear();
+                    drawer.DrawCharacter(character);
+
+                    Joint jointPtr = character.body;
+                    while(jointPtr.joints.Count > 0) {
+                        jointPtr.Rotate(1);
+                        jointPtr = jointPtr.joints[0];
+                    }
+                }));
+                Thread.Sleep(100);
+                Console.WriteLine("KEK");
+            }
         }
     }
 }

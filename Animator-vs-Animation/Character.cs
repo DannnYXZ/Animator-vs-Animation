@@ -42,8 +42,8 @@ namespace Animator_vs_Animation {
         public Character() {
             body = new Joint();
             Joint ptr = body;
-            for(int i = 0; i < 1; i++) {
-                Joint newJoint = new Joint(new Vector3(60, 60, 0));
+            for(int i = 0; i < 20; i++) {
+                Joint newJoint = new Joint(new Vector3(70, 70, 0));
                 ptr.AddChild(newJoint);
                 ptr = newJoint;
             }

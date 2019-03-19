@@ -51,7 +51,7 @@ namespace Animator_vs_Animation {
             float _W = -X * r.X - Y * r.Y - Z * r.Z;
             float _X = W * r.X - Z * r.Y + Y * r.Z;
             float _Y = Z * r.X + W * r.Y - X * r.Z;
-            float _Z = X * r.Y - Y * r.X + W * r.Z;
+            float _Z = -Y * r.X + X * r.Y + W * r.Z;
             return new Quaternion(_X, _Y, _Z, _W);
         }
         public Vector3 Rotate(Vector3 v) {
