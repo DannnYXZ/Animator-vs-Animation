@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Animator_vs_Animation {
     class Quaternion {
@@ -11,7 +7,7 @@ namespace Animator_vs_Animation {
         float Y;
         float Z;
         float W;
-        public static Quaternion Identity = new Quaternion(0, 0, 0, 1);
+        public static Quaternion Identity { get { return new Quaternion(0, 0, 0, 1); } }
         public Quaternion(float X, float Y, float Z, float W) {
             this.X = X;
             this.Y = Y;
@@ -28,6 +24,9 @@ namespace Animator_vs_Animation {
         }
         public float Length() {
             return (float)Math.Sqrt(X * X + Y * Y + Z * Z + W * W);
+        }
+        public float Angle() {
+            return (float)Math.Acos(ExtendedMath.Clamp(W, -1, 1));
         }
         public Quaternion Normalize() {
             float length = this.Length();
@@ -55,7 +54,7 @@ namespace Animator_vs_Animation {
             return new Quaternion(_X, _Y, _Z, _W);
         }
         public Vector3 Rotate(Vector3 v) {
-            Quaternion w = this.Mul(v).Mul(this.Conjugate());
+            Quaternion w = Mul(v).Mul(Conjugate());
             Vector3 res = new Vector3(w.X, w.Y, w.Z);
             return res;
         }

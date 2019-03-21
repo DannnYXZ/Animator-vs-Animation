@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -19,12 +19,12 @@ namespace Animator_vs_Animation {
             }
             return prevPoint;
         }
-        public float DistanceFromTarget(Joint rootJoint, Vector3 target, float[] angles) {
+        public static float DistanceFromTarget(Joint rootJoint, Vector3 target, float[] angles) {
             Vector3 point = ForwardKinematics(rootJoint, angles);
             return Vector3.Distance(point, target);
         }
         private const float SamplingDistance = 0.05f;
-        public float PartialGradient(Joint rootJoint, Vector3 target, float[] angles, int i) {
+        public static float PartialGradient(Joint rootJoint, Vector3 target, float[] angles, int i) {
             float saveAngle = angles[i];
             float f_x = DistanceFromTarget(rootJoint, target, angles);
             angles[i] += SamplingDistance;
@@ -36,7 +36,7 @@ namespace Animator_vs_Animation {
         private const float LearningRate = 0.01f;
         private const float DistanceThreshold = 0.5f;
         // Call repeatedly
-        public void InverseKinematics(Joint rootJoint,Vector3 target, float[] angles) {
+        public static void InverseKinematics(Joint rootJoint, Vector3 target) {
             if (DistanceFromTarget(rootJoint, target, angles) < DistanceThreshold)
                 return;
             for (int i = 0; i < angles.Length; i++) {
