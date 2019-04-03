@@ -18,7 +18,7 @@ namespace Animator_vs_Animation {
             Vector3 point = ForwardKinematics(rootJoint, angle);
             return Vector3.Distance(point, target);
         }
-        private const float samplingDistance = 0.05f;
+        private const float samplingDistance = 2f;
         public static float PartialGradient(Joint rootJoint, Vector3 target) {
             float angle = rootJoint.Rot.Angle();
             float f_x = DistanceFromTarget(rootJoint, target, angle);

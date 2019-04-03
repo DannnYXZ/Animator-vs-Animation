@@ -12,6 +12,9 @@ namespace Animator_vs_Animation {
         public List<Joint> Joints { get; set; } = new List<Joint>();
         public bool ShowDependencies { get; set; } = true;
         public Joint() { }
+        public Joint(string name) {
+            Name = name;
+        }
         public Joint(Vector3 shift) {
             StartOffset = shift;
         }

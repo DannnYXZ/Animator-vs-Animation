@@ -26,7 +26,7 @@ namespace Animator_vs_Animation {
             return (float)Math.Sqrt(X * X + Y * Y + Z * Z + W * W);
         }
         public float Angle() {
-            return (float)Math.Acos(ExtendedMath.Clamp(W, -1, 1));
+            return (float)Math.Acos(ExtendedMath.Clamp(W, -1, 1)) * 2; // ATTENTION
         }
         public Quaternion Normalize() {
             float length = this.Length();

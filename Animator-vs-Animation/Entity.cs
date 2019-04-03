@@ -9,7 +9,7 @@
             set { weight = value > 0 ? value : 0; }
         }
         public Entity() {
-            Pivot = new Joint();
+            Pivot = new Joint("Pivot");
             ID = idCounter++;
         }
     }

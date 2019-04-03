@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Animator_vs_Animation;
+using System;
 
-namespace Animator_vs_Animation.Characters {
+namespace Characters {
     class Character : Humanoid {
-        string Name { get; }
+        public string Name { get; set; }
         public Character(TRace race) : base(race) {
             Name = "Mr. Nobody";
         }

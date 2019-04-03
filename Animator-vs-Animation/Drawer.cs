@@ -1,9 +1,9 @@
-﻿using Animator_vs_Animation.Characters;
-using System;
+﻿using System;
 using System.Numerics;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using Characters;
 
 namespace Animator_vs_Animation {
     class Drawer {

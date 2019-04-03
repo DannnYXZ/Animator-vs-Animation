@@ -21,22 +21,22 @@ namespace Animator_vs_Animation {
             stomach.AddChild(chest);
             Pivot.AddChild(stomach);
             Joint upperArmL = new Joint("Upper Arm.L", new Vector3(-20, -40, 0));
-            Joint lowerArmL = new Joint("Upper Arm.L", new Vector3(-20, 10, 0));
+            Joint lowerArmL = new Joint("Lower Arm.L", new Vector3(-20, 10, 0));
             upperArmL.AddChild(lowerArmL);
             Pivot.AddChild(upperArmL);
 
             Joint upperArmR = new Joint("Upper Arm.R", new Vector3(20, -40, 0));
-            Joint lowerArmR = new Joint("Upper Arm.R", new Vector3(20, 10, 0));
+            Joint lowerArmR = new Joint("Lower Arm.R", new Vector3(20, 10, 0));
             upperArmR.AddChild(lowerArmR);
             Pivot.AddChild(upperArmR);
 
             Joint upperLegR = new Joint("Upper Leg.R", new Vector3(-20, 30, 0));
-            Joint lowerLegR = new Joint("Upper Leg.R", new Vector3(0, 30, 0));
+            Joint lowerLegR = new Joint("Lower Leg.R", new Vector3(0, 30, 0));
             upperLegR.AddChild(lowerLegR);
             Pivot.AddChild(upperLegR);
 
             Joint upperLegL = new Joint("Upper Leg.L", new Vector3(20, 30, 0));
-            Joint lowerLegL = new Joint("Upper Leg.L", new Vector3(0, 30, 0));
+            Joint lowerLegL = new Joint("Lower Leg.L", new Vector3(0, 30, 0));
             upperLegL.AddChild(lowerLegL);
             Pivot.AddChild(upperLegL);
         }
