@@ -9,7 +9,7 @@ namespace Animator_vs_Animation {
             while (curJoint.Joints.Count > 0) {
                 curJoint = curJoint.Joints[0];
                 Quaternion passedRot = new Quaternion(curJoint.Axis, angle);
-                rotation = rotation.Mul(passedRot);
+                rotation.Mul(passedRot);
                 prevPoint = prevPoint + rotation.Rotate(curJoint.StartOffset);
             }
             return prevPoint;
@@ -20,7 +20,7 @@ namespace Animator_vs_Animation {
         }
         private const float samplingDistance = 2f;
         public static float PartialGradient(Joint rootJoint, Vector3 target) {
-            float angle = rootJoint.Rot.Angle();
+            float angle = rootJoint.Quaternion.Angle();
             float f_x = DistanceFromTarget(rootJoint, target, angle);
             angle += samplingDistance;
             float f_x_plus_d = DistanceFromTarget(rootJoint, target, angle);
@@ -30,7 +30,7 @@ namespace Animator_vs_Animation {
         private const float LearningRate = 0.2f;
         private const float DistanceThreshold = 1f;
         public static void InverseKinematics(Joint rootJoint, Vector3 target) {
-            float curAngle = rootJoint.Rot.Angle();
+            float curAngle = rootJoint.Quaternion.Angle();
             if (DistanceFromTarget(rootJoint, target, curAngle) < DistanceThreshold)
                 return;
             if (rootJoint.Joints.Count > 0) {

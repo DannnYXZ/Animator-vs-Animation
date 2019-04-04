@@ -10,7 +10,7 @@ namespace Animator_vs_Animation {
         Green = 0x66CC00
     }
     class Humanoid : Entity {
-        public TRace Race { get; }
+        public TRace Race { get; set; }
         public Humanoid(TRace race) {
             Race = race;
             Pivot.ShowDependencies = false;

@@ -1,12 +1,53 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Numerics;
+using System.Windows;
 
 namespace Animator_vs_Animation {
-    class Quaternion {
-        float X;
-        float Y;
-        float Z;
-        float W;
+    class Quaternion: INotifyPropertyChanged {
+        float w;
+        float x;
+        float y;
+        float z;
+        public float W {
+            get { return w; }
+            set {
+                w = value;
+                OnPropertyChanged("W");
+            }
+        }
+        public float X {
+            get { return x; }
+            set {
+                x = value;
+                //Normalize(); // ???
+                OnPropertyChanged("X");
+            }
+        }
+        public float Y {
+            get { return y; }
+            set {
+                y = value;
+                //Normalize();
+                OnPropertyChanged("Y");
+            }
+        }
+        public float Z {
+            get { return z; }
+            set {
+                z = value;
+                //Normalize();
+                OnPropertyChanged("Z");
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string propertyName = null) {
+            if (PropertyChanged != null)
+                Application.Current.Dispatcher.Invoke(() =>
+                    PropertyChanged(this, new PropertyChangedEventArgs(propertyName))
+                );
+        }
         public static Quaternion Identity { get { return new Quaternion(0, 0, 0, 1); } }
         public Quaternion(float X, float Y, float Z, float W) {
             this.X = X;
@@ -22,11 +63,14 @@ namespace Animator_vs_Animation {
             Z = sinHalf * axis.Z;
             W = cosHalf;
         }
+        public Quaternion Copy() {
+            return new Quaternion(X, Y, Z, W);
+        }
         public float Length() {
             return (float)Math.Sqrt(X * X + Y * Y + Z * Z + W * W);
         }
         public float Angle() {
-            return (float)Math.Acos(ExtendedMath.Clamp(W, -1, 1)) * 2; // ATTENTION
+            return (float)Math.Acos(ExtendedMath.Clamp(W, -1, 1)) * 2 ; // ATTENTION
         }
         public Quaternion Normalize() {
             float length = this.Length();
@@ -44,17 +88,19 @@ namespace Animator_vs_Animation {
             float _X = X * r.W + W * r.X - Z * r.Y + Y * r.Z;
             float _Y = Y * r.W + Z * r.X + W * r.Y - X * r.Z;
             float _Z = Z * r.W - Y * r.X + X * r.Y + W * r.Z;
-            return new Quaternion(_X, _Y, _Z, _W);
+            W = _W; X = _X; Y = _Y; Z = _Z;
+            return this;
         }
         public Quaternion Mul(Vector3 r) {
             float _W = -X * r.X - Y * r.Y - Z * r.Z;
             float _X = W * r.X - Z * r.Y + Y * r.Z;
             float _Y = Z * r.X + W * r.Y - X * r.Z;
             float _Z = -Y * r.X + X * r.Y + W * r.Z;
-            return new Quaternion(_X, _Y, _Z, _W);
+            W = _W; X = _X; Y = _Y; Z = _Z;
+            return this;
         }
         public Vector3 Rotate(Vector3 v) {
-            Quaternion w = Mul(v).Mul(Conjugate());
+            Quaternion w = Copy().Mul(v).Mul(Conjugate());
             Vector3 res = new Vector3(w.X, w.Y, w.Z);
             return res;
         }

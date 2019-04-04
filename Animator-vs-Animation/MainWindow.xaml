@@ -21,17 +21,21 @@
                 <ScaleTransform ScaleX="1" ScaleY="-1" CenterX=".5" CenterY=".5" />
             </Canvas.LayoutTransform-->
         </Canvas>
-        <DockPanel Grid.Column="1" LastChildFill="False" Background="#95A5A6" Margin="8">
-            <ComboBox Name="typeSelector" DockPanel.Dock="Top" Loaded="TypeSelector_Loaded">
-            </ComboBox>
-            <Button DockPanel.Dock="Top" Height="30">Create</Button>
-            <TreeView Name="trvMenu" DockPanel.Dock="Top">
-                <TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate DataType="{x:Type local:MenuItem}" ItemsSource="{Binding Items}">
-                        <TextBlock Text="{Binding Title}" MouseDown="TextBlock_MouseDown"/>
-                    </HierarchicalDataTemplate>
-                </TreeView.ItemTemplate>
-            </TreeView>
-        </DockPanel>
+        <ScrollViewer Grid.Column="1">
+            <StackPanel Name="pnlMain" Background="#95A5A6" Margin="8">
+                <ComboBox Name="typeSelector" Loaded="TypeSelector_Loaded">
+                </ComboBox>
+                <Button Height="30">Create</Button>
+                <TreeView Name="trvMenu">
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate DataType="{x:Type local:MenuItem}" ItemsSource="{Binding Items}">
+                            <TextBlock Text="{Binding Data.Name}" MouseDown="TextBlock_MouseDown"/>
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
+                <StackPanel Name="pnlEdit"></StackPanel>
+                <Button Name="KEK" Click="KEK_Click"></Button>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Window>
