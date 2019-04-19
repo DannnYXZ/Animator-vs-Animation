@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using ExtendedMath;
+using Rig;
 
 namespace Animator_vs_Animation {
     static class Kinematics {
@@ -9,7 +10,7 @@ namespace Animator_vs_Animation {
             while (curJoint.Joints.Count > 0) {
                 curJoint = curJoint.Joints[0];
                 Quaternion passedRot = new Quaternion(curJoint.Axis, angle);
-                rotation.Mul(passedRot);
+                rotation.Mul(passedRot).Mul(root.Quaternion);
                 prevPoint = prevPoint + rotation.Rotate(curJoint.StartOffset);
             }
             return prevPoint;

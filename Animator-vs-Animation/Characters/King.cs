@@ -1,8 +1,8 @@
-﻿using Animator_vs_Animation;
-using System;
+﻿using System;
 
 namespace Characters {
     class King : Character {
+        public King() : base() { }
         public King(TRace race) : base(race) { }
         public override void SaySomething() {
             Console.WriteLine(@"

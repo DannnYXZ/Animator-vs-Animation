@@ -1,6 +1,4 @@
-﻿using Animator_vs_Animation.Reflection;
-using System;
-using System.Numerics;
+﻿using System;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
@@ -13,14 +11,17 @@ using System.Collections.Generic;
 using System.Windows.Data;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using ExtendedMath;
+using Rig;
+using System.Linq;
 
 namespace Animator_vs_Animation {
     public class MenuItem {
         public MenuItem() {
-            this.Items = new ObservableCollection<MenuItem>();
+            Items = new ObservableCollection<MenuItem>();
         }
         public string Title { get; set; }
-        public Object Data { get; set; }
+        public object Data { get; set; }
         public ObservableCollection<MenuItem> Items { get; set; }
     }
     public partial class MainWindow : Window, INotifyPropertyChanged {
@@ -30,33 +31,23 @@ namespace Animator_vs_Animation {
         Tentacle tentacle1, tentacle2, tentacle3;
         Drawer drawer;
 
-        public string test = "";
-        public string Test {
-            get {
-                return test;
-            }
-            set {
-                test = value;
-                OnPropertyChanged();
-            }
-        }
-
         public MainWindow() {
             DataContext = this;
             InitializeComponent();
+            drawer = new Drawer(worldCanvas);
             orange = new Character("OrangY", TRace.Orange);
-            orange.Pivot.Translate(new Vector3(700, 200, 0));
             theOne = new Character(TRace.White);
-            theOne.Pivot.Translate(new Vector3(400, 200, 0));
             green = new Character("Mr. Green", TRace.Green);
-            green.Pivot.Translate(new Vector3(700, 400, 0));
             king = new King(TRace.Yellow);
-            king.Pivot.Translate(new Vector3(500, 100, 0));
             tentacle1 = new Tentacle("Tentacle 1", 4, 70);
-            tentacle1.Pivot.Translate(new Vector3(300, 400, 0));
             tentacle2 = new Tentacle("Tentacle 2", 4, 70);
-            tentacle2.Pivot.Translate(new Vector3(600, 400, 0));
             tentacle3 = new Tentacle("Tentacle 3", 4, 70);
+            orange.Pivot.Translate(new Vector3(700, 200, 0));
+            theOne.Pivot.Translate(new Vector3(400, 200, 0));
+            green.Pivot.Translate(new Vector3(700, 400, 0));
+            king.Pivot.Translate(new Vector3(500, 100, 0));
+            tentacle1.Pivot.Translate(new Vector3(300, 400, 0));
+            tentacle2.Pivot.Translate(new Vector3(600, 400, 0));
             tentacle3.Pivot.Translate(new Vector3(500, 400, 0));
             Console.WriteLine(orange.ToString());
             Console.WriteLine(theOne.ToString());
@@ -67,9 +58,6 @@ namespace Animator_vs_Animation {
             green.SaySomething();
             Console.WriteLine("King Says: ");
             king.SaySomething();
-            drawer = new Drawer(worldCanvas);
-            Thread thr = new Thread(new ThreadStart(this.Render));
-            thr.Start();
 
             stageObjects = new List<Entity>();
             stageObjects.Add(orange);
@@ -79,26 +67,16 @@ namespace Animator_vs_Animation {
             stageObjects.Add(tentacle3);
             stageObjects.Add(green);
             stageObjects.Add(king);
-
             foreach (var x in stageObjects)
                 trvMenu.Items.Add(ConstructTree(x));
 
-            TextBox tb = new TextBox();
-            tb.DataContext = this.tentacle1.Pivot.Quaternion;
-            var binding = new Binding();
-            binding.Mode = BindingMode.TwoWay;
-            binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-            //binding.Source = Test;
-            binding.Path = new PropertyPath("X");
-            tb.SetBinding(TextBox.TextProperty, binding);
-            pnlMain.Children.Add(tb);
+            Thread thr = new Thread(new ThreadStart(Render));
+            thr.Start();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string propertyName = null) {
-            Dispatcher.Invoke(() =>
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName))
-            );
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         public void Render() {
             while (true) {
@@ -107,27 +85,27 @@ namespace Animator_vs_Animation {
                     foreach (var obj in stageObjects) {
                         obj.Pivot.UpdatePos();
                         drawer.DrawEntity(obj);
-                        if (typeof(Tentacle) == obj.GetType())
-                            Kinematics.InverseKinematics(obj.Pivot, GetMouseVec3());
+                        if (typeof(Tentacle) == obj.GetType()) {
+                            Kinematics.InverseKinematics(obj.Pivot.Joints[0], GetMouseVec3());
+
+                        }
                     }
                 }));
                 Thread.Sleep(10);
             }
         }
-        MenuItem ConstructTree(Object rootObj) {
+        MenuItem ConstructTree(object rootObj) {
             MenuItem rootNode = new MenuItem();
             rootNode.Data = rootObj;
             var type = rootObj.GetType();
             var props = type.GetProperties();
             foreach (var prop in props) {
-                if (prop.PropertyType == typeof(String) ||
+                if (!(prop.PropertyType == typeof(string) ||
                     prop.PropertyType == typeof(int) ||
+                    prop.PropertyType == typeof(bool) ||
                     prop.PropertyType == typeof(Vector3) ||
                     prop.PropertyType == typeof(Quaternion) ||
-                    prop.PropertyType == typeof(Boolean) ||
-                    prop.PropertyType == typeof(TRace)) {
-                    Console.WriteLine("\tProperty: " + prop.Name + " Type: " + prop.PropertyType);
-                } else {
+                    prop.PropertyType == typeof(TRace))) {
                     if (prop.GetValue(rootObj) is List<Joint>) {
                         foreach (var item in (List<Joint>)prop.GetValue(rootObj)) {
                             MenuItem childNode = new MenuItem();
@@ -148,48 +126,60 @@ namespace Animator_vs_Animation {
             string nameSpace = "Characters";
             var types = Assembly.GetExecutingAssembly().GetTypes();
             foreach (var type in types) {
-                if (type.Namespace == nameSpace)
+                if (type.Namespace == nameSpace && !type.IsEnum)
                     typeSelector.Items.Add(type);
             }
         }
+        private void CustomTextBoxBinding(TextBox textBox, string propPath, object context) {
+            var binding = new Binding();
+            textBox.DataContext = context;
+            binding.Mode = BindingMode.TwoWay;
+            binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+            binding.Path = new PropertyPath(propPath);
+            textBox.SetBinding(TextBox.TextProperty, binding);
+        }
+        private void DestroyMenu(MenuItem menu) {
+            if (menu.Items.Count > 0) {
+                foreach (var item in menu.Items)
+                    DestroyMenu(item);
+            }
+        }
+        private void BtnCreate_Click(object sender, RoutedEventArgs e) {
+            var type = (Type)typeSelector.SelectedItem;
+            if (type == null)
+                return;
+            var instance = Activator.CreateInstance(type) as Entity;
+            stageObjects.Add(instance);
+            trvMenu.Items.Clear();
+            foreach (var x in stageObjects)
+                trvMenu.Items.Add(ConstructTree(x));
+        }
+
         private StackPanel ConstructEditor(MenuItem menuItem) {
-            Object obj = menuItem.Data;
+            object rootObj = menuItem.Data;
             StackPanel panel = new StackPanel();
             panel.Orientation = Orientation.Vertical;
-            var type = obj.GetType();
+            var type = rootObj.GetType();
             var props = type.GetProperties();
             foreach (var prop in props) {
                 if (prop.GetSetMethod(false) == null)
                     continue;
-                Label lb = new Label();
-                lb.Content = prop.Name + ":";
-                panel.Children.Add(lb);
-                if (prop.PropertyType == typeof(String)) {
+                Label label = new Label();
+                label.Content = prop.Name + ":";
+                panel.Children.Add(label);
+                if (prop.PropertyType == typeof(string)) {
                     TextBox tb = new TextBox();
-                    tb.DataContext = obj;
-                    var binding = new Binding();
-                    binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-                    binding.Path = new PropertyPath(prop.Name);
-                    tb.SetBinding(TextBox.TextProperty, binding);
+                    CustomTextBoxBinding(tb, prop.Name, rootObj);
                     panel.Children.Add(tb);
                 }
                 if (prop.PropertyType == typeof(int)) {
                     TextBox tb = new TextBox();
-                    var binding = new Binding();
-                    tb.DataContext = obj;
-                    binding.Path = new PropertyPath(prop.Name);
-                    binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-                    binding.Mode = BindingMode.TwoWay;
-                    tb.SetBinding(TextBox.TextProperty, binding);
+                    CustomTextBoxBinding(tb, prop.Name, rootObj);
                     panel.Children.Add(tb);
                 }
-                if (prop.PropertyType == typeof(Boolean)) {
+                if (prop.PropertyType == typeof(bool)) {
                     TextBox tb = new TextBox();
-                    tb.DataContext = obj;
-                    var binding = new Binding();
-                    binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-                    binding.Path = new PropertyPath(prop.Name);
-                    tb.SetBinding(TextBox.TextProperty, binding);
+                    CustomTextBoxBinding(tb, prop.Name, rootObj);
                     panel.Children.Add(tb);
                 }
                 if (prop.PropertyType == typeof(Vector3)) {
@@ -199,9 +189,11 @@ namespace Animator_vs_Animation {
                     Label lb2 = new Label(); lb2.Content = "Y:";
                     Label lb3 = new Label(); lb3.Content = "Z:";
                     TextBox tb1 = new TextBox();
-
                     TextBox tb2 = new TextBox();
                     TextBox tb3 = new TextBox();
+                    CustomTextBoxBinding(tb1, "X", prop.GetValue(rootObj));
+                    CustomTextBoxBinding(tb2, "Y", prop.GetValue(rootObj));
+                    CustomTextBoxBinding(tb3, "Z", prop.GetValue(rootObj));
                     vectorPanel.Children.Add(lb1);
                     vectorPanel.Children.Add(tb1);
                     vectorPanel.Children.Add(lb2);
@@ -218,39 +210,17 @@ namespace Animator_vs_Animation {
                     TextBox tb2 = new TextBox();
                     TextBox tb3 = new TextBox();
                     Label l0 = new Label();
-                    l0.Content = "W:";
                     Label l1 = new Label();
-                    l1.Content = "X:";
                     Label l2 = new Label();
-                    l2.Content = "Y:";
                     Label l3 = new Label();
+                    l0.Content = "W:";
+                    l1.Content = "X:";
+                    l2.Content = "Y:";
                     l3.Content = "Z:";
-                    // binding stuff
-                    var binding = new Binding();
-                    tb0.DataContext = prop.GetValue(obj);
-                    binding.Path = new PropertyPath("W");
-                    binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-                    binding.Mode = BindingMode.TwoWay;
-                    tb0.SetBinding(TextBox.TextProperty, binding);
-
-                    binding = new Binding();
-                    tb1.DataContext = prop.GetValue(obj);
-                    binding.Path = new PropertyPath("X");
-                    binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-                    tb1.SetBinding(TextBox.TextProperty, binding);
-
-                    binding = new Binding();
-                    tb2.DataContext = prop.GetValue(obj);
-                    binding.Path = new PropertyPath("Y");
-                    binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-                    tb2.SetBinding(TextBox.TextProperty, binding);
-
-                    binding = new Binding();
-                    tb3.DataContext = prop.GetValue(obj);
-                    binding.Path = new PropertyPath("Z");
-                    binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-                    tb3.SetBinding(TextBox.TextProperty, binding);
-
+                    CustomTextBoxBinding(tb0, "W", prop.GetValue(rootObj));
+                    CustomTextBoxBinding(tb1, "X", prop.GetValue(rootObj));
+                    CustomTextBoxBinding(tb2, "Y", prop.GetValue(rootObj));
+                    CustomTextBoxBinding(tb3, "Z", prop.GetValue(rootObj));
                     quatPanel.Children.Add(l0);
                     quatPanel.Children.Add(tb0);
                     quatPanel.Children.Add(l1);
@@ -261,25 +231,32 @@ namespace Animator_vs_Animation {
                     quatPanel.Children.Add(tb3);
                     panel.Children.Add(quatPanel);
                 }
-                if (prop.PropertyType == typeof(TRace)) {
+                if (prop.PropertyType.IsEnum) {
                     ComboBox cb = new ComboBox();
-                    cb.Items.Add(Enum.GetValues(typeof(TRace)));
+                    cb.ItemsSource = Enum.GetValues(prop.PropertyType).Cast<Enum>();
+                    var value = prop.GetValue(rootObj);
+                    cb.DataContext = value;
+                    cb.SelectionChanged += (object sender, SelectionChangedEventArgs e) => {
+                        var comboBox = sender as ComboBox;
+                        prop.SetValue(rootObj, comboBox.SelectedItem);
+                    };
+                    foreach (var item in cb.Items) {
+                        if (item.Equals(value)) {
+                            cb.SelectedItem = item;
+                            break;
+                        }
+                    }
                     panel.Children.Add(cb);
                 }
             }
             return panel;
         }
         private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e) {
-            //DataContext dataContext = ((FrameworkElement)sender).DataContext;
             var baseObj = sender as FrameworkElement;
             var dataContext = baseObj.DataContext as MenuItem;
             pnlEdit.Children.Clear();
             pnlEdit.Children.Add(ConstructEditor(dataContext));
             Console.WriteLine();
-        }
-
-        private void KEK_Click(object sender, RoutedEventArgs e) {
-            Test += "X";
         }
 
         public static Point GetMousePoint() {

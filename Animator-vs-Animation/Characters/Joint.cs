@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Numerics;
+﻿using ExtendedMath;
+using System.Collections.Generic;
 
-namespace Animator_vs_Animation {
+namespace Rig {
     class Joint {
         Joint parent;
         public string Name { get; set; }
-        public Vector3 StartOffset { get; set; } = Vector3.Zero;
+        public Vector3 StartOffset { get; set; } = new Vector3(0, 0, 0);
         public Vector3 Position { get; private set; } = new Vector3(0, 0, 0);
         public Quaternion Quaternion { get; set; } = Quaternion.Identity;
         public Vector3 Axis { get; } = new Vector3(0, 0, 1);
@@ -24,31 +24,24 @@ namespace Animator_vs_Animation {
         }
         public void UpdatePos() {
             if (parent == null)
-                Position = Vector3.Zero + StartOffset;
+                Position = Vector3.Zero + Quaternion.Rotate(StartOffset);
             else
-                Position = parent.Position + StartOffset;
+                Position = parent.Position + Quaternion.Rotate(StartOffset);
             foreach (Joint child in Joints)
                 child.UpdatePos();
         }
         public void Rotate(float ang) {
             Quaternion angRot = new Quaternion(Axis, ang);
-            foreach (Joint child in Joints) {
-                child.StartOffset = angRot.Rotate(child.StartOffset);
-                child.UpdatePos();
-                child.Rotate(ang);
-            }
             Quaternion.Mul(angRot);
+            foreach (Joint child in Joints)
+                child.Rotate(ang);
         }
         public void AddChild(Joint joint) {
             joint.parent = this;
             Joints.Add(joint);
-            joint.UpdatePos();
         }
         public void Translate(Vector3 shift) {
             StartOffset += shift;
-            UpdatePos();
-            foreach (Joint joint in Joints)
-                joint.UpdatePos();
         }
     }
 }

@@ -67,6 +67,7 @@
     <Compile Include="Characters\Skeletons\Felidae.cs" />
     <Compile Include="Math\Quaternion.cs" />
     <Compile Include="Characters\Skeletons\Tentacle.cs" />
+    <Compile Include="Math\Vector3.cs" />
     <Compile Include="Reflection\ReflectionTools.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -1,23 +1,25 @@
 ﻿using System;
-using System.Numerics;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Characters;
 using System.Windows.Shapes;
+using ExtendedMath;
+using Rig;
 
 namespace Animator_vs_Animation {
     class Drawer {
         Canvas canvas;
+        BrushConverter bc = new BrushConverter();
         public Drawer(Canvas canvas) {
             this.canvas = canvas;
         }
-        private void DrawJoints(Joint joint, int color) {
+        private void DrawJoints(Joint joint, uint color) {
             Vector3 startPoint = joint.Position;
             foreach (Joint child in joint.Joints) {
                 if (joint.ShowDependencies) {
                     Line line = new Line();
                     line.Stroke = Brushes.Orange;
-                    line.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString('#' + Convert.ToString(color, 16)));
+                    line.Stroke = (SolidColorBrush)(bc.ConvertFrom('#' + color.ToString("X8")));
                     line.StrokeThickness = 5;
                     line.X1 = joint.Position.X;
                     line.Y1 = joint.Position.Y;
@@ -37,9 +39,9 @@ namespace Animator_vs_Animation {
         }
         public void DrawEntity(Entity entity) {
             if (entity.GetType() == typeof(Tentacle))
-                DrawJoints(entity.Pivot, 0xAC3BAF);
-            else if (entity.GetType() == typeof(Character)) {
-                DrawJoints(entity.Pivot, (int)((Character)entity).Race);
+                DrawJoints(entity.Pivot, (uint)TRace.Purple);
+            else {
+                DrawJoints(entity.Pivot, (uint)((Humanoid)entity).Race);
             }
         }
     }

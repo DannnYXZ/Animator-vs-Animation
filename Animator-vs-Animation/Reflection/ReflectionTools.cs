@@ -13,8 +13,6 @@ namespace Animator_vs_Animation.Reflection {
             var assembly = Assembly.GetExecutingAssembly();
             //assembly = Assembly.GetAssembly("Ani")
             Console.WriteLine(assembly.FullName);
-
-            //ConstructorInfo[] ci = t.GetConstructors(BindingFlags.Public | BindingFlags.Instance);
             var types = assembly.GetTypes();
             foreach(var type in types) {
                 Console.WriteLine("Type: " + type.Name + " BaseType: " + type.BaseType);

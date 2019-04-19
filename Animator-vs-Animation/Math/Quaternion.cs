@@ -1,10 +1,10 @@
-﻿using System;
+﻿using ExtendedMath;
+using System;
 using System.ComponentModel;
-using System.Numerics;
 using System.Windows;
 
-namespace Animator_vs_Animation {
-    class Quaternion: INotifyPropertyChanged {
+namespace ExtendedMath {
+    class Quaternion : INotifyPropertyChanged {
         float w;
         float x;
         float y;
@@ -20,7 +20,6 @@ namespace Animator_vs_Animation {
             get { return x; }
             set {
                 x = value;
-                //Normalize(); // ???
                 OnPropertyChanged("X");
             }
         }
@@ -28,7 +27,6 @@ namespace Animator_vs_Animation {
             get { return y; }
             set {
                 y = value;
-                //Normalize();
                 OnPropertyChanged("Y");
             }
         }
@@ -36,17 +34,12 @@ namespace Animator_vs_Animation {
             get { return z; }
             set {
                 z = value;
-                //Normalize();
                 OnPropertyChanged("Z");
             }
         }
-
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string propertyName = null) {
-            if (PropertyChanged != null)
-                Application.Current.Dispatcher.Invoke(() =>
-                    PropertyChanged(this, new PropertyChangedEventArgs(propertyName))
-                );
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         public static Quaternion Identity { get { return new Quaternion(0, 0, 0, 1); } }
         public Quaternion(float X, float Y, float Z, float W) {
@@ -70,7 +63,7 @@ namespace Animator_vs_Animation {
             return (float)Math.Sqrt(X * X + Y * Y + Z * Z + W * W);
         }
         public float Angle() {
-            return (float)Math.Acos(ExtendedMath.Clamp(W, -1, 1)) * 2 ; // ATTENTION
+            return (float)Math.Acos(MetaMath.Clamp(W, -1, 1)) * 2;
         }
         public Quaternion Normalize() {
             float length = this.Length();

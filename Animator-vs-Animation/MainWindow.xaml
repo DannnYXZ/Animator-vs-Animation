@@ -16,16 +16,12 @@
             <ColumnDefinition Width="132*"/>
         </Grid.ColumnDefinitions>
         <Canvas Name="worldCanvas" Background="Transparent" Grid.ColumnSpan="1">
-            <!--Canvas.LayoutTransform>
-                <ScaleTransform ScaleX="1" ScaleY="-1" CenterX="0" CenterY="0" />
-                <ScaleTransform ScaleX="1" ScaleY="-1" CenterX=".5" CenterY=".5" />
-            </Canvas.LayoutTransform-->
         </Canvas>
         <ScrollViewer Grid.Column="1">
             <StackPanel Name="pnlMain" Background="#95A5A6" Margin="8">
                 <ComboBox Name="typeSelector" Loaded="TypeSelector_Loaded">
                 </ComboBox>
-                <Button Height="30">Create</Button>
+                <Button Name="btnCreate" Height="30" Click="BtnCreate_Click">Create</Button>
                 <TreeView Name="trvMenu">
                     <TreeView.ItemTemplate>
                         <HierarchicalDataTemplate DataType="{x:Type local:MenuItem}" ItemsSource="{Binding Items}">
@@ -34,7 +30,6 @@
                     </TreeView.ItemTemplate>
                 </TreeView>
                 <StackPanel Name="pnlEdit"></StackPanel>
-                <Button Name="KEK" Click="KEK_Click"></Button>
             </StackPanel>
         </ScrollViewer>
     </Grid>

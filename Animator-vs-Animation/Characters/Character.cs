@@ -4,6 +4,7 @@ using System.ComponentModel;
 
 namespace Characters {
     class Character : Humanoid {
+        public Character() : base() { }
         public Character(TRace race) : base(race) {
             Name = "Mr. Nobody";
         }

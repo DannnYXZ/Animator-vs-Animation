@@ -1,18 +1,20 @@
-﻿using System.Numerics;
-namespace Animator_vs_Animation {
-    public enum TRace {
-        Orange = 0xFF6D00,
-        Red = 0xCC0001,
-        White = 0xFFFFFF,
-        Black = 0,
-        Purple = 0xAC3BAF,
-        Yellow = 0xFFCC00,
-        Green = 0x66CC00
+﻿using ExtendedMath;
+using Rig;
+
+namespace Characters {
+    public enum TRace : uint {
+        Orange  = 0xFFFF6D00,
+        Red     = 0xFFCC0001,
+        White   = 0xFFFFFFFF,
+        Black   = 0xFF000001,
+        Purple  = 0xFFAC3BAF,
+        Yellow  = 0xFFFFCC00,
+        Green   = 0xFF66CC00,
+        Unknown = 0x00000000
     }
     class Humanoid : Entity {
-        public TRace Race { get; set; }
-        public Humanoid(TRace race) {
-            Race = race;
+        public TRace Race { get; set; } = TRace.Unknown;
+        public Humanoid() : base() {
             Pivot.ShowDependencies = false;
             Joint stomach = new Joint("Stomach", new Vector3(0, -20, 0));
             Joint chest = new Joint("Chest", new Vector3(0, -20, 0));
@@ -39,6 +41,9 @@ namespace Animator_vs_Animation {
             Joint lowerLegL = new Joint("Lower Leg.L", new Vector3(0, 30, 0));
             upperLegL.AddChild(lowerLegL);
             Pivot.AddChild(upperLegL);
+        }
+        public Humanoid(TRace race = TRace.Unknown) : this() {
+            Race = race;
         }
     }
 }

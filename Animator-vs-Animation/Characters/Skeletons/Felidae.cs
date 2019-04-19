@@ -1,4 +1,6 @@
-﻿namespace Animator_vs_Animation {
+﻿using Rig;
+
+namespace Characters {
     class Felidae : Entity {
 
     }

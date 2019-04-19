@@ -1,6 +1,7 @@
-﻿using System.ComponentModel;
+﻿using Rig;
+using System.ComponentModel;
 
-namespace Animator_vs_Animation {
+namespace Rig {
     class Entity {
         public Joint Pivot { get; }
         static int idCounter = 1;
@@ -18,9 +19,10 @@ namespace Animator_vs_Animation {
             get { return weight; }
             set { weight = value > 0 ? value : 0; }
         }
-        public Entity() {
-            Pivot = new Joint("Pivot");
+        public Entity(string name = "Unknown") {
+            Name = name;
             ID = idCounter++;
+            Pivot = new Joint("Pivot");
         }
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string propertyName = null) {
