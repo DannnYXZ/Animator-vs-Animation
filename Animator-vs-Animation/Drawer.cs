@@ -21,6 +21,9 @@ namespace Animator_vs_Animation {
                     line.Stroke = Brushes.Orange;
                     line.Stroke = (SolidColorBrush)(bc.ConvertFrom('#' + color.ToString("X8")));
                     line.StrokeThickness = 5;
+
+                    //Console.WriteLine(joint.Name + " " + joint.Position.X.ToString() + " " + joint.Position.Y.ToString() + " " + joint.Position.Z.ToString());
+
                     line.X1 = joint.Position.X;
                     line.Y1 = joint.Position.Y;
                     line.X2 = child.Position.X;
@@ -38,6 +41,7 @@ namespace Animator_vs_Animation {
             canvas.Children.Add(circle);
         }
         public void DrawEntity(Entity entity) {
+            // Console.WriteLine(entity.Name);
             if (entity.GetType() == typeof(Tentacle))
                 DrawJoints(entity.Pivot, (uint)TRace.Purple);
             else {

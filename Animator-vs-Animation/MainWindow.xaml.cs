@@ -14,6 +14,9 @@ using System.Runtime.CompilerServices;
 using ExtendedMath;
 using Rig;
 using System.Linq;
+using System.IO;
+using Newtonsoft.Json;
+using Microsoft.Win32;
 
 namespace Animator_vs_Animation {
     public class MenuItem {
@@ -30,9 +33,8 @@ namespace Animator_vs_Animation {
         King king;
         Tentacle tentacle1, tentacle2, tentacle3;
         Drawer drawer;
-
+        TreeView treeView;
         public MainWindow() {
-            DataContext = this;
             InitializeComponent();
             drawer = new Drawer(worldCanvas);
             orange = new Character("OrangY", TRace.Orange);
@@ -67,13 +69,30 @@ namespace Animator_vs_Animation {
             stageObjects.Add(tentacle3);
             stageObjects.Add(green);
             stageObjects.Add(king);
-            foreach (var x in stageObjects)
-                trvMenu.Items.Add(ConstructTree(x));
 
             Thread thr = new Thread(new ThreadStart(Render));
             thr.Start();
+
+
+
+            treeView = createTreeView();
+
+            pnlMain.Children.Add(treeView);
+            //DataContext = this;
         }
 
+        TreeView createTreeView() {
+            TreeView localTree = new TreeView();
+            var dataTemplate = new HierarchicalDataTemplate();
+            dataTemplate.DataType = typeof(MenuItem);
+            FrameworkElementFactory infoHolder = new FrameworkElementFactory(typeof(TextBlock));
+            infoHolder.AddHandler(TextBlock.MouseDownEvent, new MouseButtonEventHandler(TextBlock_MouseDown));
+            dataTemplate.ItemsSource = new Binding("Items");
+            infoHolder.SetBinding(TextBlock.TextProperty, new Binding("Data.Name"));
+            dataTemplate.VisualTree = infoHolder;
+            localTree.ItemTemplate = dataTemplate;
+            return localTree;
+        }
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -87,7 +106,6 @@ namespace Animator_vs_Animation {
                         drawer.DrawEntity(obj);
                         if (typeof(Tentacle) == obj.GetType()) {
                             Kinematics.InverseKinematics(obj.Pivot.Joints[0], GetMouseVec3());
-
                         }
                     }
                 }));
@@ -115,7 +133,7 @@ namespace Animator_vs_Animation {
                     } else {
                         MenuItem childNode = new MenuItem();
                         childNode.Title = prop.Name;
-                        childNode = ConstructTree((Object)prop.GetValue(rootObj));
+                        childNode = ConstructTree(prop.GetValue(rootObj));
                         rootNode.Items.Add(childNode);
                     }
                 }
@@ -138,11 +156,16 @@ namespace Animator_vs_Animation {
             binding.Path = new PropertyPath(propPath);
             textBox.SetBinding(TextBox.TextProperty, binding);
         }
-        private void DestroyMenu(MenuItem menu) {
-            if (menu.Items.Count > 0) {
-                foreach (var item in menu.Items)
-                    DestroyMenu(item);
-            }
+        private void recreateTreeView() {
+#if false
+            trvMenu.Items.Clear();
+            foreach (var x in stageObjects)
+                trvMenu.Items.Add(ConstructTree(x));
+#else
+            treeView.Items.Clear();
+            foreach (var x in stageObjects)
+                treeView.Items.Add(ConstructTree(x));
+#endif
         }
         private void BtnCreate_Click(object sender, RoutedEventArgs e) {
             var type = (Type)typeSelector.SelectedItem;
@@ -150,9 +173,58 @@ namespace Animator_vs_Animation {
                 return;
             var instance = Activator.CreateInstance(type) as Entity;
             stageObjects.Add(instance);
-            trvMenu.Items.Clear();
-            foreach (var x in stageObjects)
-                trvMenu.Items.Add(ConstructTree(x));
+            recreateTreeView();
+        }
+
+        private void BtnSerialize_Click(object sender, RoutedEventArgs e) {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "JSON | *.json";
+            saveFileDialog.Title = "Save Session";
+            saveFileDialog.ShowDialog();
+            if (saveFileDialog.FileName != "") {
+                try {
+                    string json = JsonConvert.SerializeObject(
+                        stageObjects,
+                        Formatting.Indented,
+                        new JsonSerializerSettings {
+                            PreserveReferencesHandling = PreserveReferencesHandling.Objects,
+                            TypeNameHandling = TypeNameHandling.All
+                        });
+                    using (StreamWriter fs = new StreamWriter(saveFileDialog.FileName)) {
+                        fs.Write(json);
+                    }
+                } catch (Exception exeption) {
+                    Console.WriteLine(exeption.Message);
+                }
+            }
+            return;
+        }
+
+        private void BtnDeserialize_Click(object sender, RoutedEventArgs e) {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "JSON | *.json";
+            openFileDialog.Title = "Open Session";
+            openFileDialog.ShowDialog();
+            if (openFileDialog.FileName != "") {
+                try {
+                    List<Entity> objects = new List<Entity>();
+                    objects = JsonConvert.DeserializeObject<List<Entity>>(File.ReadAllText(openFileDialog.FileName),
+                    new JsonSerializerSettings {
+                        PreserveReferencesHandling = PreserveReferencesHandling.Objects,
+                        TypeNameHandling = TypeNameHandling.All
+                    });
+                    stageObjects.Clear();
+                    stageObjects = objects;
+                } catch (Exception exception) {
+                    MessageBox.Show(exception.Message);
+                    Console.WriteLine(exception.Message);
+                }
+                recreateTreeView();
+            }
+        }
+
+        private void _____TextBlock_MouseDown(object sender, MouseButtonEventArgs e) {
+
         }
 
         private StackPanel ConstructEditor(MenuItem menuItem) {

@@ -1,6 +1,7 @@
 ﻿using ExtendedMath;
 using System;
 using System.ComponentModel;
+using System.Runtime.Serialization;
 using System.Windows;
 
 namespace ExtendedMath {

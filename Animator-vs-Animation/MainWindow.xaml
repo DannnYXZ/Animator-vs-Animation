@@ -19,13 +19,14 @@
         </Canvas>
         <ScrollViewer Grid.Column="1">
             <StackPanel Name="pnlMain" Background="#95A5A6" Margin="8">
-                <ComboBox Name="typeSelector" Loaded="TypeSelector_Loaded">
-                </ComboBox>
+                <ComboBox Name="typeSelector" Loaded="TypeSelector_Loaded"></ComboBox>
                 <Button Name="btnCreate" Height="30" Click="BtnCreate_Click">Create</Button>
+                <Button Name="btnSerialize" Height="30" Click="BtnSerialize_Click">Serialize</Button>
+                <Button Name="btnDeserialize" Height="30" Click="BtnDeserialize_Click">Deserialize</Button>
                 <TreeView Name="trvMenu">
                     <TreeView.ItemTemplate>
                         <HierarchicalDataTemplate DataType="{x:Type local:MenuItem}" ItemsSource="{Binding Items}">
-                            <TextBlock Text="{Binding Data.Name}" MouseDown="TextBlock_MouseDown"/>
+                            <TextBlock Text="{Binding Data.Name}" MouseDown="_____TextBlock_MouseDown"/>
                         </HierarchicalDataTemplate>
                     </TreeView.ItemTemplate>
                 </TreeView>

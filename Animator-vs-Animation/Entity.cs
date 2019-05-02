@@ -1,11 +1,10 @@
 ﻿using Rig;
 using System.ComponentModel;
+using System.Runtime.Serialization;
 
 namespace Rig {
+    
     class Entity {
-        public Joint Pivot { get; }
-        static int idCounter = 1;
-        int weight;
         private string name;
         public string Name {
             get { return name; }
@@ -14,6 +13,9 @@ namespace Rig {
                 OnPropertyChanged("Name");
             }
         }
+        public Joint Pivot { get; }
+        static int idCounter = 1;
+        int weight;
         public int ID { get; }
         public int Weight {
             get { return weight; }

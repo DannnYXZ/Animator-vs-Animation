@@ -31,7 +31,7 @@ namespace ExtendedMath {
                 OnPropertyChanged("Z");
             }
         }
-        public static Vector3 Zero { get; } = new Vector3(0, 0, 0);
+        public static Vector3 Zero { get { return new Vector3(0, 0, 0); } }
         public Vector3(float x, float y, float z) {
             this.x = x;
             this.y = y;

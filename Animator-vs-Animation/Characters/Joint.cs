@@ -1,15 +1,18 @@
 ﻿using ExtendedMath;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace Rig {
     class Joint {
-        Joint parent;
+        Joint parent = null;
         public string Name { get; set; }
-        public Vector3 StartOffset { get; set; } = new Vector3(0, 0, 0);
-        public Vector3 Position { get; private set; } = new Vector3(0, 0, 0);
+        public Vector3 StartOffset { get; set; } = Vector3.Zero;
+        public Vector3 Position { get; private set; } = Vector3.Zero;
         public Quaternion Quaternion { get; set; } = Quaternion.Identity;
         public Vector3 Axis { get; } = new Vector3(0, 0, 1);
-        public List<Joint> Joints { get; private set; } = new List<Joint>();
+        [JsonIgnore]
+        public List<Joint> Joints { get; } = new List<Joint>();
+        // public List<Joint> Joints { get; }
         public bool ShowDependencies { get; set; } = true;
         public Joint() { }
         public Joint(string name) {
