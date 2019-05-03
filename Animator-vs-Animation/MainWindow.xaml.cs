@@ -5,8 +5,6 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Characters;
-using System.Windows.Controls;
-using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -73,11 +71,8 @@ namespace Animator_vs_Animation {
             pluginManager = new PluginManager(Settings.PLUGIN_PATH);
             pluginManager.ReloadPlugins();
             hierarchyPlugin = pluginManager.GetPlugin("Hierarchy Plugin");
-            if (hierarchyPlugin != null) {
-
-                //pnlMain.Children.Add((FrameworkElement)hierarchyPlugin.Execute(stageObjects));
+            if (hierarchyPlugin != null)
                 pnlPlugins.Children.Add((FrameworkElement)hierarchyPlugin.Execute(stageObjects));
-            }
 
             Thread thr = new Thread(new ThreadStart(Render));
             thr.Start();

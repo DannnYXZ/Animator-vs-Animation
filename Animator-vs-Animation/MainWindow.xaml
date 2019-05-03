@@ -30,7 +30,8 @@
                         </HierarchicalDataTemplate>
                     </TreeView.ItemTemplate>
                 </-->
-                <StackPanel Name="pnlPlugins" Background="#95A5FF" Margin="8">
+                <StackPanel Name="pnlPlugins" Margin="8">
+                    <TextBlock Text="PLUGINS" TextAlignment="Center" Background="GreenYellow"></TextBlock>
                 </StackPanel>
                 <StackPanel Name="pnlEdit"></StackPanel>
             </StackPanel>

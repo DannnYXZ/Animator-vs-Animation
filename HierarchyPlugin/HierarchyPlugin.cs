@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace Plugin.Hierarchy {
     public class MenuItem {
@@ -59,8 +60,7 @@ namespace Plugin.Hierarchy {
             binding.Path = new PropertyPath(propPath);
             textBox.SetBinding(TextBox.TextProperty, binding);
         }
-
-        private StackPanel ConstructMenuItemEditor(MenuItem menuItem) {
+        private StackPanel CreateMenuItemEditor(MenuItem menuItem) {
             object rootObj = menuItem.Data;
             StackPanel panel = new StackPanel();
             panel.Orientation = Orientation.Vertical;
@@ -90,50 +90,27 @@ namespace Plugin.Hierarchy {
                 if (prop.PropertyType == typeof(Vector3)) {
                     StackPanel vectorPanel = new StackPanel();
                     vectorPanel.Orientation = Orientation.Horizontal;
-                    Label lb1 = new Label(); lb1.Content = "X:";
-                    Label lb2 = new Label(); lb2.Content = "Y:";
-                    Label lb3 = new Label(); lb3.Content = "Z:";
-                    TextBox tb1 = new TextBox();
-                    TextBox tb2 = new TextBox();
-                    TextBox tb3 = new TextBox();
-                    CustomTextBoxBinding(tb1, "X", prop.GetValue(rootObj));
-                    CustomTextBoxBinding(tb2, "Y", prop.GetValue(rootObj));
-                    CustomTextBoxBinding(tb3, "Z", prop.GetValue(rootObj));
-                    vectorPanel.Children.Add(lb1);
-                    vectorPanel.Children.Add(tb1);
-                    vectorPanel.Children.Add(lb2);
-                    vectorPanel.Children.Add(tb2);
-                    vectorPanel.Children.Add(lb3);
-                    vectorPanel.Children.Add(tb3);
+                    foreach (var text in new string[] { "X", "Y", "Z" }) {
+                        var lb = new Label();
+                        lb.Content = text + ":";
+                        var tb = new TextBox();
+                        CustomTextBoxBinding(tb, text, prop.GetValue(rootObj));
+                        vectorPanel.Children.Add(lb);
+                        vectorPanel.Children.Add(tb);
+                    }
                     panel.Children.Add(vectorPanel);
                 }
                 if (prop.PropertyType == typeof(Quaternion)) {
                     StackPanel quatPanel = new StackPanel();
                     quatPanel.Orientation = Orientation.Horizontal;
-                    TextBox tb0 = new TextBox();
-                    TextBox tb1 = new TextBox();
-                    TextBox tb2 = new TextBox();
-                    TextBox tb3 = new TextBox();
-                    Label l0 = new Label();
-                    Label l1 = new Label();
-                    Label l2 = new Label();
-                    Label l3 = new Label();
-                    l0.Content = "W:";
-                    l1.Content = "X:";
-                    l2.Content = "Y:";
-                    l3.Content = "Z:";
-                    CustomTextBoxBinding(tb0, "W", prop.GetValue(rootObj));
-                    CustomTextBoxBinding(tb1, "X", prop.GetValue(rootObj));
-                    CustomTextBoxBinding(tb2, "Y", prop.GetValue(rootObj));
-                    CustomTextBoxBinding(tb3, "Z", prop.GetValue(rootObj));
-                    quatPanel.Children.Add(l0);
-                    quatPanel.Children.Add(tb0);
-                    quatPanel.Children.Add(l1);
-                    quatPanel.Children.Add(tb1);
-                    quatPanel.Children.Add(l2);
-                    quatPanel.Children.Add(tb2);
-                    quatPanel.Children.Add(l3);
-                    quatPanel.Children.Add(tb3);
+                    foreach (var text in new string[] { "W", "X", "Y", "Z" }) {
+                        var lb = new Label();
+                        lb.Content = text + ":";
+                        var tb = new TextBox();
+                        CustomTextBoxBinding(tb, text, prop.GetValue(rootObj));
+                        quatPanel.Children.Add(lb);
+                        quatPanel.Children.Add(tb);
+                    }
                     panel.Children.Add(quatPanel);
                 }
                 if (prop.PropertyType.IsEnum) {
@@ -156,19 +133,18 @@ namespace Plugin.Hierarchy {
             }
             return panel;
         }
-        private void MenuTextBlock_MouseDown(object sender, MouseButtonEventArgs e) {
+        private void MenuItem_MouseDown(object sender, MouseButtonEventArgs e) {
             var baseObj = sender as FrameworkElement;
             var dataContext = baseObj.DataContext as MenuItem;
             menuEditorBlock.Children.Clear();
-            menuEditorBlock.Children.Add(ConstructMenuItemEditor(dataContext));
+            menuEditorBlock.Children.Add(CreateMenuItemEditor(dataContext));
         }
-
         private TreeView createTreeView() {
             TreeView newTree = new TreeView();
             var dataTemplate = new HierarchicalDataTemplate();
             dataTemplate.DataType = typeof(MenuItem);
             FrameworkElementFactory infoHolder = new FrameworkElementFactory(typeof(TextBlock));
-            infoHolder.AddHandler(TextBlock.MouseDownEvent, new MouseButtonEventHandler(MenuTextBlock_MouseDown));
+            infoHolder.AddHandler(TextBlock.MouseDownEvent, new MouseButtonEventHandler(MenuItem_MouseDown));
             dataTemplate.ItemsSource = new Binding("Items");
             infoHolder.SetBinding(TextBlock.TextProperty, new Binding("Data.Name"));
             dataTemplate.VisualTree = infoHolder;
@@ -177,13 +153,13 @@ namespace Plugin.Hierarchy {
         }
 
         Expander expander = null;
-        StackPanel pluginBlock;
-        StackPanel menuEditorBlock;
+        StackPanel pluginBlock, menuEditorBlock;
         TreeView treeView;
 
         public object Execute(object obj) {
             if (expander == null) {
                 expander = new Expander();
+                expander.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#95A5FF"));
                 expander.Header = Name;
                 pluginBlock = new StackPanel();
                 menuEditorBlock = new StackPanel();
