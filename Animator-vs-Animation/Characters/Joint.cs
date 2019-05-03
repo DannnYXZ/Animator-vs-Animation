@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace Rig {
-    class Joint {
+    public class Joint {
         Joint parent = null;
         public string Name { get; set; }
         public Vector3 StartOffset { get; set; } = Vector3.Zero;

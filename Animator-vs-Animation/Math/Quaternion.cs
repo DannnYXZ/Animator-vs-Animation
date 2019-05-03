@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Windows;
 
 namespace ExtendedMath {
-    class Quaternion : INotifyPropertyChanged {
+    public class Quaternion : INotifyPropertyChanged {
         float w;
         float x;
         float y;

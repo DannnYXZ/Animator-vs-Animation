@@ -23,13 +23,15 @@
                 <Button Name="btnCreate" Height="30" Click="BtnCreate_Click">Create</Button>
                 <Button Name="btnSerialize" Height="30" Click="BtnSerialize_Click">Serialize</Button>
                 <Button Name="btnDeserialize" Height="30" Click="BtnDeserialize_Click">Deserialize</Button>
-                <TreeView Name="trvMenu">
+                <!--TreeView Name="trvMenu">
                     <TreeView.ItemTemplate>
                         <HierarchicalDataTemplate DataType="{x:Type local:MenuItem}" ItemsSource="{Binding Items}">
-                            <TextBlock Text="{Binding Data.Name}" MouseDown="_____TextBlock_MouseDown"/>
+                            <TextBlock Text="{Binding Data.Name}"/>
                         </HierarchicalDataTemplate>
                     </TreeView.ItemTemplate>
-                </TreeView>
+                </-->
+                <StackPanel Name="pnlPlugins" Background="#95A5FF" Margin="8">
+                </StackPanel>
                 <StackPanel Name="pnlEdit"></StackPanel>
             </StackPanel>
         </ScrollViewer>

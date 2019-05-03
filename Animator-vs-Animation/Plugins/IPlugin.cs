@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Plugin {
-    interface IPlugin {
+    public interface IPlugin {
         string Name { get; }
         string Description { get; }
         object Execute(object obj);

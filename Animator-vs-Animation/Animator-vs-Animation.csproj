@@ -72,9 +72,10 @@
     <Compile Include="Math\Quaternion.cs" />
     <Compile Include="Characters\Skeletons\Tentacle.cs" />
     <Compile Include="Math\Vector3.cs" />
-    <Compile Include="Plugins\HierarchyPlugin.cs" />
     <Compile Include="Plugins\IPlugin.cs" />
+    <Compile Include="Plugins\PluginManager.cs" />
     <Compile Include="Reflection\ReflectionTools.cs" />
+    <Compile Include="Settings.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

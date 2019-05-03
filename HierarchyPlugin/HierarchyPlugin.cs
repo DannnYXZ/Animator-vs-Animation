@@ -11,7 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 
-namespace HierarchyPlugin {
+namespace Plugin.Hierarchy {
     public class MenuItem {
         public MenuItem() {
             Items = new ObservableCollection<MenuItem>();
@@ -20,7 +20,6 @@ namespace HierarchyPlugin {
         public object Data { get; set; }
         public ObservableCollection<MenuItem> Items { get; set; }
     }
-
     class HierarchyPlugin : IPlugin {
         public string Name { get => "Hierarchy Plugin"; }
         public string Description { get => "Creates tree view"; }
@@ -61,7 +60,7 @@ namespace HierarchyPlugin {
             textBox.SetBinding(TextBox.TextProperty, binding);
         }
 
-        private StackPanel ConstructEditor(MenuItem menuItem) {
+        private StackPanel ConstructMenuItemEditor(MenuItem menuItem) {
             object rootObj = menuItem.Data;
             StackPanel panel = new StackPanel();
             panel.Orientation = Orientation.Vertical;
@@ -157,29 +156,47 @@ namespace HierarchyPlugin {
             }
             return panel;
         }
-        private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e) {
+        private void MenuTextBlock_MouseDown(object sender, MouseButtonEventArgs e) {
             var baseObj = sender as FrameworkElement;
             var dataContext = baseObj.DataContext as MenuItem;
-            //pnlEdit.Children.Clear();
-            //pnlEdit.Children.Add(ConstructEditor(dataContext));
-            Console.WriteLine();
+            menuEditorBlock.Children.Clear();
+            menuEditorBlock.Children.Add(ConstructMenuItemEditor(dataContext));
         }
-        TreeView createTreeView() {
-            TreeView localTree = new TreeView();
+
+        private TreeView createTreeView() {
+            TreeView newTree = new TreeView();
             var dataTemplate = new HierarchicalDataTemplate();
             dataTemplate.DataType = typeof(MenuItem);
             FrameworkElementFactory infoHolder = new FrameworkElementFactory(typeof(TextBlock));
-            infoHolder.AddHandler(TextBlock.MouseDownEvent, new MouseButtonEventHandler(TextBlock_MouseDown));
+            infoHolder.AddHandler(TextBlock.MouseDownEvent, new MouseButtonEventHandler(MenuTextBlock_MouseDown));
             dataTemplate.ItemsSource = new Binding("Items");
             infoHolder.SetBinding(TextBlock.TextProperty, new Binding("Data.Name"));
             dataTemplate.VisualTree = infoHolder;
-            localTree.ItemTemplate = dataTemplate;
-            return localTree;
+            newTree.ItemTemplate = dataTemplate;
+            return newTree;
         }
-        public object Execute(object obj) {
-            TreeView treeView = new TreeView();
 
-            return treeView;
+        Expander expander = null;
+        StackPanel pluginBlock;
+        StackPanel menuEditorBlock;
+        TreeView treeView;
+
+        public object Execute(object obj) {
+            if (expander == null) {
+                expander = new Expander();
+                expander.Header = Name;
+                pluginBlock = new StackPanel();
+                menuEditorBlock = new StackPanel();
+                treeView = createTreeView();
+                pluginBlock.Children.Add(treeView);
+                pluginBlock.Children.Add(menuEditorBlock);
+                expander.Content = pluginBlock;
+            }
+            List<Entity> list = (List<Entity>)obj;
+            treeView.Items.Clear();
+            foreach (var x in list)
+                treeView.Items.Add(ConstructTree(x));
+            return expander;
         }
     }
 }

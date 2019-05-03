@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 
 namespace Rig {
     
-    class Entity {
+    public class Entity {
         private string name;
         public string Name {
             get { return name; }
