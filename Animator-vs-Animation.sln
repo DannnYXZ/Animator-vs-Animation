@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Animator-vs-Animation", "An
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HierarchyPlugin", "HierarchyPlugin\HierarchyPlugin.csproj", "{2CCA8F21-CC17-4EC2-9A60-3A849A9B4A00}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SessionCompressorPlugin", "SessionCompressorPlugin\SessionCompressorPlugin.csproj", "{53484582-6F08-40A6-819C-243F3A40B6A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScramblerPlugin", "ScramblerPlugin\ScramblerPlugin.csproj", "{74474178-CCF3-452E-A4C1-26458E89BE19}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{2CCA8F21-CC17-4EC2-9A60-3A849A9B4A00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2CCA8F21-CC17-4EC2-9A60-3A849A9B4A00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2CCA8F21-CC17-4EC2-9A60-3A849A9B4A00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53484582-6F08-40A6-819C-243F3A40B6A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53484582-6F08-40A6-819C-243F3A40B6A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53484582-6F08-40A6-819C-243F3A40B6A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53484582-6F08-40A6-819C-243F3A40B6A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74474178-CCF3-452E-A4C1-26458E89BE19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74474178-CCF3-452E-A4C1-26458E89BE19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74474178-CCF3-452E-A4C1-26458E89BE19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74474178-CCF3-452E-A4C1-26458E89BE19}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

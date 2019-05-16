@@ -12,7 +12,7 @@ namespace Rig {
         public Vector3 Axis { get; } = new Vector3(0, 0, 1);
         [JsonIgnore]
         public List<Joint> Joints { get; } = new List<Joint>();
-        // public List<Joint> Joints { get; }
+        //public List<Joint> Joints { get; }
         public bool ShowDependencies { get; set; } = true;
         public Joint() { }
         public Joint(string name) {

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -22,8 +23,8 @@ namespace Plugin.Hierarchy {
         public ObservableCollection<MenuItem> Items { get; set; }
     }
     class HierarchyPlugin : IPlugin {
-        public string Name { get => "Hierarchy Plugin"; }
-        public string Description { get => "Creates tree view"; }
+        public string Name => "Hierarchy Plugin";
+        public string Description => "Creates tree view for List<Entity>";
         MenuItem ConstructTree(object rootObj) {
             MenuItem rootNode = new MenuItem();
             rootNode.Data = rootObj;
@@ -155,24 +156,39 @@ namespace Plugin.Hierarchy {
         Expander expander = null;
         StackPanel pluginBlock, menuEditorBlock;
         TreeView treeView;
+        //Button btnBuild;
 
         public object Execute(object obj) {
+            List<Entity> list = (List<Entity>)obj;
+            treeView.Items.Clear();
+            foreach (var x in list)
+                treeView.Items.Add(ConstructTree(x));
+            return null;
+        }
+
+        public FrameworkElement GetUI() {
             if (expander == null) {
                 expander = new Expander();
                 expander.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#95A5FF"));
                 expander.Header = Name;
                 pluginBlock = new StackPanel();
                 menuEditorBlock = new StackPanel();
+                //btnBuild = new Button();
+                //btnBuild.Click += BtnBuild_Click;
                 treeView = createTreeView();
+                //pluginBlock.Children.Add(btnBuild);
                 pluginBlock.Children.Add(treeView);
                 pluginBlock.Children.Add(menuEditorBlock);
                 expander.Content = pluginBlock;
             }
-            List<Entity> list = (List<Entity>)obj;
-            treeView.Items.Clear();
-            foreach (var x in list)
-                treeView.Items.Add(ConstructTree(x));
             return expander;
+        }
+
+        public void Initialize(IHost host) {
+        }
+
+        public void SetArgument(string key, object value) {
+            
         }
     }
 }

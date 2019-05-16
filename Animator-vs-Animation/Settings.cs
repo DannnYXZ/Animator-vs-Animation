@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace Animator_vs_Animation {
     static class Settings {
-        public static string PLUGIN_PATH = @"D:\DannnY-CODE\PROJECTS\Animator-vs-Animation\HierarchyPlugin\bin\Debug\";
+        public static string[] PLUGIN_PATHS = { @"D:\DannnY-CODE\PROJECTS\Animator-vs-Animation\HierarchyPlugin\bin\Debug\",
+                                                @"D:\DannnY-CODE\PROJECTS\Animator-vs-Animation\SessionCompressorPlugin\bin\Debug\",
+                                                @"D:\DannnY-CODE\PROJECTS\Animator-vs-Animation\ScramblerPlugin\bin\Debug\"};
     }
 }

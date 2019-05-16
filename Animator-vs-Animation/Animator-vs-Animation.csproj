@@ -72,6 +72,7 @@
     <Compile Include="Math\Quaternion.cs" />
     <Compile Include="Characters\Skeletons\Tentacle.cs" />
     <Compile Include="Math\Vector3.cs" />
+    <Compile Include="Plugins\IHost.cs" />
     <Compile Include="Plugins\IPlugin.cs" />
     <Compile Include="Plugins\PluginManager.cs" />
     <Compile Include="Reflection\ReflectionTools.cs" />

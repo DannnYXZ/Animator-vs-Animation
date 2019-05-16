@@ -21,8 +21,7 @@
             <StackPanel Name="pnlMain" Background="#95A5A6" Margin="8">
                 <ComboBox Name="typeSelector" Loaded="TypeSelector_Loaded"></ComboBox>
                 <Button Name="btnCreate" Height="30" Click="BtnCreate_Click">Create</Button>
-                <Button Name="btnSerialize" Height="30" Click="BtnSerialize_Click">Serialize</Button>
-                <Button Name="btnDeserialize" Height="30" Click="BtnDeserialize_Click">Deserialize</Button>
+                <Button Name="btnRefresh" Height="30" Click="BtnRefresh_Click">Refresh</Button>
                 <!--TreeView Name="trvMenu">
                     <TreeView.ItemTemplate>
                         <HierarchicalDataTemplate DataType="{x:Type local:MenuItem}" ItemsSource="{Binding Items}">
